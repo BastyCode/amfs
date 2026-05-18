@@ -401,6 +401,235 @@ export default function App() {
                 </div>
               </div>
             </header>
+
+            {/* Modal for New Equipment */}
+            {isModalOpen && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-[2px]">
+                <div className="bg-white rounded-lg shadow-2xl w-full max-w-2xl border overflow-hidden animate-in fade-in zoom-in duration-200">
+                  <div className="p-4 border-b flex justify-between items-center bg-slate-50">
+                    <h3 className="font-bold text-slate-800 text-sm uppercase tracking-tight">Crear Nuevo Accesspoint</h3>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-slate-600" onClick={() => setIsModalOpen(false)}>
+                      <X size={18} />
+                    </Button>
+                  </div>
+                  <div className="p-6 space-y-6 max-h-[80vh] overflow-y-auto">
+                    {/* 1. Ubicación y Cliente */}
+                    <div className="space-y-4">
+                      <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-widest border-b pb-1">1. Ubicación y Cliente</h4>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-1.5">
+                          <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">País</label>
+                          <Select value={newEq.country} onValueChange={(val) => setNewEq({...newEq, country: val})}>
+                            <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
+                            <SelectContent>
+                              {countries.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-1.5">
+                          <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Cliente</label>
+                          <Select value={newEq.clientId} onValueChange={(val) => setNewEq({...newEq, clientId: val, totemId: ""})}>
+                            <SelectTrigger className="h-9 text-sm">
+                              <SelectValue placeholder="Seleccionar Cliente..." />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {Object.entries(clients).map(([id, c]) => (
+                                <SelectItem key={id} value={id}>{c.name}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+
+                      {newEq.clientId && (
+                        <div className="grid grid-cols-2 gap-4 animate-in fade-in slide-in-from-top-1">
+                          <div className="p-3 bg-slate-50 rounded-md border border-slate-200 space-y-1">
+                            <div className="text-[9px] font-bold text-slate-400 uppercase">ID Cliente</div>
+                            <div className="text-sm font-bold text-slate-700">{newEq.clientId}</div>
+                          </div>
+                          <div className="space-y-1.5">
+                            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Número AP (Totem)</label>
+                            <Select value={newEq.totemId} onValueChange={(val) => setNewEq({...newEq, totemId: val})}>
+                              <SelectTrigger className="h-9 text-sm">
+                                <SelectValue placeholder="Seleccionar Totem..." />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {Object.entries(totemToClient)
+                                  .filter(([_, cid]) => cid === newEq.clientId)
+                                  .map(([tid]) => (
+                                    <SelectItem key={tid} value={tid}>Totem {tid}</SelectItem>
+                                  ))
+                                }
+                                {/* Option for manual entry or if no totems match in demo data */}
+                                <SelectItem value="nuevo">Nuevo Totem...</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* 2. Configuración de Software y Red */}
+                    <div className="space-y-4">
+                      <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-widest border-b pb-1">2. Software y Red</h4>
+                      <div className="grid grid-cols-3 gap-4">
+                        <div className="space-y-1.5">
+                          <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">N° Dongle</label>
+                          <Select value={newEq.dongleId} onValueChange={(val) => setNewEq({...newEq, dongleId: val})}>
+                            <SelectTrigger className="h-9 text-sm">
+                              <SelectValue placeholder="Seleccionar..." />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {Object.keys(dongles).map(id => <SelectItem key={id} value={id}>{id}</SelectItem>)}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-1.5">
+                          <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Versión App</label>
+                          <Select value={newEq.appVersion} onValueChange={(val) => setNewEq({...newEq, appVersion: val})}>
+                            <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
+                            <SelectContent>
+                              {appVersions.map(v => <SelectItem key={v} value={v}>{v}</SelectItem>)}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-1.5">
+                          <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Estado Inicial</label>
+                          <Select value={newEq.status} onValueChange={(val) => setNewEq({...newEq, status: val})}>
+                            <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
+                            <SelectContent>
+                              {uniqueStatuses.filter(s => s !== "All").map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+
+                      {newEq.dongleId && dongles[newEq.dongleId as keyof typeof dongles] && (
+                        <div className="p-3 bg-emerald-50/50 rounded-md border border-emerald-100 flex justify-between items-center animate-in fade-in">
+                          <div className="space-y-0.5">
+                            <div className="text-[9px] font-bold text-emerald-600 uppercase">Licencia</div>
+                            <div className="text-xs font-bold text-emerald-800">{dongles[newEq.dongleId as keyof typeof dongles].license}</div>
+                          </div>
+                          <div className="text-right space-y-0.5">
+                            <div className="text-[9px] font-bold text-emerald-600 uppercase">Vencimiento</div>
+                            <div className="text-xs font-bold text-emerald-800">{dongles[newEq.dongleId as keyof typeof dongles].term}</div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* 3. Componentes de Hardware */}
+                    <div className="space-y-4">
+                      <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-widest border-b pb-1">3. Hardware</h4>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-1.5">
+                          <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Número de Lata</label>
+                          <Input 
+                            value={newEq.canId} 
+                            onChange={(e) => setNewEq({...newEq, canId: e.target.value})}
+                            placeholder="Ej: 105"
+                            className="h-9 text-sm"
+                          />
+                        </div>
+                        <div className="space-y-1.5">
+                          <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Tipo de Lata</label>
+                          <Select value={newEq.canType} onValueChange={(val) => setNewEq({...newEq, canType: val})}>
+                            <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
+                            <SelectContent>
+                              {canTypes.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-1.5">
+                          <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Número de NUC</label>
+                          <Select value={newEq.nucSerial} onValueChange={(val) => setNewEq({...newEq, nucSerial: val})}>
+                            <SelectTrigger className="h-9 text-sm"><SelectValue placeholder="Seleccionar NUC..." /></SelectTrigger>
+                            <SelectContent>
+                              {Object.keys(inventory.nucs).map(serial => <SelectItem key={serial} value={serial}>{serial}</SelectItem>)}
+                            </SelectContent>
+                          </Select>
+                          {newEq.nucSerial && (
+                            <div className="text-[10px] text-slate-400 font-medium px-1">
+                              Modelo: {inventory.nucs[newEq.nucSerial as keyof typeof inventory.nucs]?.model}
+                            </div>
+                          )}
+                        </div>
+                        <div className="space-y-1.5">
+                          <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Impresora</label>
+                          <Select value={newEq.printerSerial} onValueChange={(val) => setNewEq({...newEq, printerSerial: val})}>
+                            <SelectTrigger className="h-9 text-sm"><SelectValue placeholder="Seleccionar Impresora..." /></SelectTrigger>
+                            <SelectContent>
+                              {Object.keys(inventory.printers).map(serial => <SelectItem key={serial} value={serial}>{serial}</SelectItem>)}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-1.5">
+                          <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Monitor</label>
+                          <Select value={newEq.monitorSerial} onValueChange={(val) => setNewEq({...newEq, monitorSerial: val})}>
+                            <SelectTrigger className="h-9 text-sm"><SelectValue placeholder="Seleccionar Monitor..." /></SelectTrigger>
+                            <SelectContent>
+                              {Object.keys(inventory.monitors).map(serial => <SelectItem key={serial} value={serial}>{serial}</SelectItem>)}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-1.5">
+                          <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Botón</label>
+                          <Select value={newEq.buttonId} onValueChange={(val) => setNewEq({...newEq, buttonId: val})}>
+                            <SelectTrigger className="h-9 text-sm"><SelectValue placeholder="Seleccionar Botón..." /></SelectTrigger>
+                            <SelectContent>
+                              {inventory.buttons.map(btn => <SelectItem key={btn} value={btn}>{btn}</SelectItem>)}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-1.5">
+                          <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Video Activo</label>
+                          <Select value={newEq.videoActive} onValueChange={(val) => setNewEq({...newEq, videoActive: val})}>
+                            <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="SI">SI</SelectItem>
+                              <SelectItem value="NO">NO</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-1.5">
+                          <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Mueble</label>
+                          <Select value={newEq.mueble} onValueChange={(val) => setNewEq({...newEq, mueble: val})}>
+                            <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="Nuevo">Nuevo</SelectItem>
+                              <SelectItem value="Viejo">Viejo</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Observaciones</label>
+                      <Input 
+                        value={newEq.observations} 
+                        onChange={(e) => setNewEq({...newEq, observations: e.target.value})}
+                        placeholder="Notas generales sobre el armado..."
+                        className="h-9 text-sm"
+                      />
+                    </div>
+                  </div>
+                  <div className="p-4 border-t bg-slate-50 flex justify-end gap-3">
+                    <Button variant="outline" className="h-9 text-sm px-4" onClick={() => setIsModalOpen(false)}>Cancelar</Button>
+                    <Button className="bg-emerald-600 hover:bg-emerald-700 h-9 text-sm px-6 font-bold" onClick={handleCreate}>Guardar Accesspoint</Button>
+                  </div>
+                </div>
+              </div>
+            )}
             
             {/* Rest of Accesspoint View (Filters and Table) */}
             <div className="px-6 py-4 bg-white border-b flex items-center justify-end gap-4">
