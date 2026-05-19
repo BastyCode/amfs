@@ -216,13 +216,13 @@ export default function App() {
   ]);
 
   const handleShipConsumable = (id: string, amount: number) => {
-    setConsumables(prev => prev.map(c => 
+    setConsumables(prev => prev.map(c =>
       c.id === id ? { ...c, stock: Math.max(0, c.stock - amount) } : c
     ));
   };
 
   const handleAddStock = (id: string, amount: number) => {
-    setConsumables(prev => prev.map(c => 
+    setConsumables(prev => prev.map(c =>
       c.id === id ? { ...c, stock: c.stock + amount } : c
     ));
   };
@@ -288,33 +288,33 @@ export default function App() {
       setEquipments(prev => prev.map(eq =>
         eq.id === id
           ? {
-              ...eq,
-              status: "Reciclaje",
-              dongleId: "",
-              components: {
-                nucSerial: "",
-                chipPhone: "",
-                bam: "",
-                printerSerial: "",
-                monitorSerial: "",
-                buttonId: "",
-                videoActive: "NO"
-              }
+            ...eq,
+            status: "Reciclaje",
+            dongleId: "",
+            components: {
+              nucSerial: "",
+              chipPhone: "",
+              bam: "",
+              printerSerial: "",
+              monitorSerial: "",
+              buttonId: "",
+              videoActive: "NO"
             }
+          }
           : eq
       ));
     }
   };
 
   const handleReturnComponent = (eqId: string, field: string) => {
-    setEquipments(prev => prev.map(eq => 
+    setEquipments(prev => prev.map(eq =>
       eq.id === eqId ? { ...eq, components: { ...eq.components, [field]: "" } } : eq
     ));
   };
 
   const handleComponentUpdate = (eqId: string, field: string, value: string) => {
     setEquipments((prev) =>
-      prev.map((eq) => 
+      prev.map((eq) =>
         eq.id === eqId ? { ...eq, components: { ...eq.components, [field]: value } } : eq
       )
     );
@@ -444,14 +444,14 @@ export default function App() {
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-1.5">
                           <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">País</label>
-                          <Select value={newEq.country} onValueChange={(val) => setNewEq({...newEq, country: val})}>
+                          <Select value={newEq.country} onValueChange={(val) => setNewEq({ ...newEq, country: val })}>
                             <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
                             <SelectContent>{countries.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
                           </Select>
                         </div>
                         <div className="space-y-1.5">
                           <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Cliente</label>
-                          <Select value={newEq.clientId} onValueChange={(val) => setNewEq({...newEq, clientId: val, totemId: ""})}>
+                          <Select value={newEq.clientId} onValueChange={(val) => setNewEq({ ...newEq, clientId: val, totemId: "" })}>
                             <SelectTrigger className="h-9 text-sm"><SelectValue placeholder="Seleccionar Cliente..." /></SelectTrigger>
                             <SelectContent>{Object.entries(clients).map(([id, c]) => <SelectItem key={id} value={id}>{c.name}</SelectItem>)}</SelectContent>
                           </Select>
@@ -465,7 +465,7 @@ export default function App() {
                           </div>
                           <div className="space-y-1.5">
                             <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Número AP (Totem)</label>
-                            <Select value={newEq.totemId} onValueChange={(val) => setNewEq({...newEq, totemId: val})}>
+                            <Select value={newEq.totemId} onValueChange={(val) => setNewEq({ ...newEq, totemId: val })}>
                               <SelectTrigger className="h-9 text-sm"><SelectValue placeholder="Seleccionar Totem..." /></SelectTrigger>
                               <SelectContent>
                                 {Object.entries(totemToClient).filter(([_, cid]) => cid === newEq.clientId).map(([tid]) => <SelectItem key={tid} value={tid}>Totem {tid}</SelectItem>)}
@@ -481,21 +481,21 @@ export default function App() {
                       <div className="grid grid-cols-3 gap-4">
                         <div className="space-y-1.5">
                           <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">N° Dongle</label>
-                          <Select value={newEq.dongleId} onValueChange={(val) => setNewEq({...newEq, dongleId: val})}>
+                          <Select value={newEq.dongleId} onValueChange={(val) => setNewEq({ ...newEq, dongleId: val })}>
                             <SelectTrigger className="h-9 text-sm"><SelectValue placeholder="Seleccionar..." /></SelectTrigger>
                             <SelectContent>{Object.keys(dongles).map(id => <SelectItem key={id} value={id}>{id}</SelectItem>)}</SelectContent>
                           </Select>
                         </div>
                         <div className="space-y-1.5">
                           <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Versión App</label>
-                          <Select value={newEq.appVersion} onValueChange={(val) => setNewEq({...newEq, appVersion: val})}>
+                          <Select value={newEq.appVersion} onValueChange={(val) => setNewEq({ ...newEq, appVersion: val })}>
                             <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
                             <SelectContent>{appVersions.map(v => <SelectItem key={v} value={v}>{v}</SelectItem>)}</SelectContent>
                           </Select>
                         </div>
                         <div className="space-y-1.5">
                           <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Estado Inicial</label>
-                          <Select value={newEq.status} onValueChange={(val) => setNewEq({...newEq, status: val})}>
+                          <Select value={newEq.status} onValueChange={(val) => setNewEq({ ...newEq, status: val })}>
                             <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
                             <SelectContent>{uniqueStatuses.filter(s => s !== "All").map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
                           </Select>
@@ -513,11 +513,11 @@ export default function App() {
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-1.5">
                           <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Número de Lata</label>
-                          <Input value={newEq.canId} onChange={(e) => setNewEq({...newEq, canId: e.target.value})} placeholder="Ej: 105" className="h-9 text-sm" />
+                          <Input value={newEq.canId} onChange={(e) => setNewEq({ ...newEq, canId: e.target.value })} placeholder="Ej: 105" className="h-9 text-sm" />
                         </div>
                         <div className="space-y-1.5">
                           <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Tipo de Lata</label>
-                          <Select value={newEq.canType} onValueChange={(val) => setNewEq({...newEq, canType: val})}>
+                          <Select value={newEq.canType} onValueChange={(val) => setNewEq({ ...newEq, canType: val })}>
                             <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
                             <SelectContent>{canTypes.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
                           </Select>
@@ -526,7 +526,7 @@ export default function App() {
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-1.5">
                           <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Número de NUC</label>
-                          <Select value={newEq.nucSerial} onValueChange={(val) => setNewEq({...newEq, nucSerial: val})}>
+                          <Select value={newEq.nucSerial} onValueChange={(val) => setNewEq({ ...newEq, nucSerial: val })}>
                             <SelectTrigger className="h-9 text-sm"><SelectValue placeholder="Seleccionar NUC..." /></SelectTrigger>
                             <SelectContent>{Object.keys(inventory.nucs).map(serial => <SelectItem key={serial} value={serial}>{serial}</SelectItem>)}</SelectContent>
                           </Select>
@@ -534,7 +534,7 @@ export default function App() {
                         </div>
                         <div className="space-y-1.5">
                           <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Impresora</label>
-                          <Select value={newEq.printerSerial} onValueChange={(val) => setNewEq({...newEq, printerSerial: val})}>
+                          <Select value={newEq.printerSerial} onValueChange={(val) => setNewEq({ ...newEq, printerSerial: val })}>
                             <SelectTrigger className="h-9 text-sm"><SelectValue placeholder="Seleccionar Impresora..." /></SelectTrigger>
                             <SelectContent>{Object.keys(inventory.printers).map(serial => <SelectItem key={serial} value={serial}>{serial}</SelectItem>)}</SelectContent>
                           </Select>
@@ -543,14 +543,14 @@ export default function App() {
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-1.5">
                           <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Monitor</label>
-                          <Select value={newEq.monitorSerial} onValueChange={(val) => setNewEq({...newEq, monitorSerial: val})}>
+                          <Select value={newEq.monitorSerial} onValueChange={(val) => setNewEq({ ...newEq, monitorSerial: val })}>
                             <SelectTrigger className="h-9 text-sm"><SelectValue placeholder="Seleccionar Monitor..." /></SelectTrigger>
                             <SelectContent>{Object.keys(inventory.monitors).map(serial => <SelectItem key={serial} value={serial}>{serial}</SelectItem>)}</SelectContent>
                           </Select>
                         </div>
                         <div className="space-y-1.5">
                           <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Botón</label>
-                          <Select value={newEq.buttonId} onValueChange={(val) => setNewEq({...newEq, buttonId: val})}>
+                          <Select value={newEq.buttonId} onValueChange={(val) => setNewEq({ ...newEq, buttonId: val })}>
                             <SelectTrigger className="h-9 text-sm"><SelectValue placeholder="Seleccionar Botón..." /></SelectTrigger>
                             <SelectContent>{inventory.buttons.map(btn => <SelectItem key={btn} value={btn}>{btn}</SelectItem>)}</SelectContent>
                           </Select>
@@ -559,14 +559,14 @@ export default function App() {
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-1.5">
                           <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Video Activo</label>
-                          <Select value={newEq.videoActive} onValueChange={(val) => setNewEq({...newEq, videoActive: val})}>
+                          <Select value={newEq.videoActive} onValueChange={(val) => setNewEq({ ...newEq, videoActive: val })}>
                             <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
                             <SelectContent><SelectItem value="SI">SI</SelectItem><SelectItem value="NO">NO</SelectItem></SelectContent>
                           </Select>
                         </div>
                         <div className="space-y-1.5">
                           <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Mueble</label>
-                          <Select value={newEq.mueble} onValueChange={(val) => setNewEq({...newEq, mueble: val})}>
+                          <Select value={newEq.mueble} onValueChange={(val) => setNewEq({ ...newEq, mueble: val })}>
                             <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
                             <SelectContent><SelectItem value="Nuevo">Nuevo</SelectItem><SelectItem value="Viejo">Viejo</SelectItem></SelectContent>
                           </Select>
@@ -575,7 +575,7 @@ export default function App() {
                     </div>
                     <div className="space-y-1.5">
                       <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Observaciones</label>
-                      <Input value={newEq.observations} onChange={(e) => setNewEq({...newEq, observations: e.target.value})} placeholder="Notas generales sobre el armado..." className="h-9 text-sm" />
+                      <Input value={newEq.observations} onChange={(e) => setNewEq({ ...newEq, observations: e.target.value })} placeholder="Notas generales sobre el armado..." className="h-9 text-sm" />
                     </div>
                   </div>
                   <div className="p-4 border-t bg-slate-50 flex justify-end gap-3">
